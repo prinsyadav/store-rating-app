@@ -15,7 +15,7 @@ const Signup = () => {
   const [submitError, setSubmitError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { registerUser } = useContext(AuthContext);
+  const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -98,9 +98,7 @@ const Signup = () => {
         address: formData.address || undefined,
       };
 
-      const user = await registerUser(userData);
-
-      // Redirect based on user role (should always be 'user' for new registrations)
+      const user = await register(userData);
       navigate("/user/stores");
     } catch (err) {
       setSubmitError(err.message || "Registration failed. Please try again.");
@@ -256,6 +254,7 @@ const Signup = () => {
           <div>
             <button
               type="submit"
+              onClick={handleSubmit}
               disabled={isLoading}
               className={`group relative flex w-full justify-center rounded-md bg-blue-600 py-2 px-3 text-sm font-semibold text-white hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${
                 isLoading ? "opacity-70 cursor-not-allowed" : ""
