@@ -1,11 +1,20 @@
-// const API_BASE_URL = "http://localhost:3000/api";
-const API_BASE_URL =
-  import.meta.env.MODE === "production" ||
-  import.meta.env.VITE_USE_PRODUCTION_API === "true"
-    ? "https://store-rating-app-l4aq.onrender.com"
-    : "http://localhost:3000/api";
-
 import axios from "axios";
+
+// Configure API base URL based on environment
+const API_BASE_URL = (() => {
+  // Check if in production mode or if explicitly using production API
+  if (
+    import.meta.env.MODE === "production" ||
+    import.meta.env.VITE_USE_PRODUCTION_API === "true"
+  ) {
+    // Use Render deployed backend with /api path
+    return "https://store-rating-app-l4aq.onrender.com/api";
+  }
+  // Use local development backend
+  return "http://localhost:3000/api";
+})();
+
+console.log("API URL being used:", API_BASE_URL);
 
 // Helper function to get the JWT token from localStorage
 const getToken = () => localStorage.getItem("token");
@@ -104,7 +113,7 @@ export const adminApi = {
   getUserById: async (userId) => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/admin/users/${userId}`, // Remove the duplicate /api
+        `${API_BASE_URL}/admin/users/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${getToken()}`,
@@ -130,7 +139,7 @@ export const adminApi = {
   updateUser: async (userId, userData) => {
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/admin/users/${userId}`, // Remove the duplicate /api
+        `${API_BASE_URL}/admin/users/${userId}`,
         userData,
         {
           headers: {
@@ -166,7 +175,7 @@ export const adminApi = {
   getStoreById: async (storeId) => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/admin/stores/${storeId}`, // Remove the duplicate /api
+        `${API_BASE_URL}/admin/stores/${storeId}`,
         {
           headers: {
             Authorization: `Bearer ${getToken()}`,
@@ -193,7 +202,7 @@ export const adminApi = {
   updateStore: async (storeId, storeData) => {
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/admin/stores/${storeId}`, // Remove the duplicate /api
+        `${API_BASE_URL}/admin/stores/${storeId}`,
         storeData,
         {
           headers: {
@@ -224,5 +233,5 @@ export const storeApi = {
   getStoreRatings: () => apiRequest("/store-owner/ratings"),
 };
 
-// Export the apiRequest for use in other files if needed
-export { apiRequest };
+// Export the apiRequest and API_BASE_URL for use in other files if needed
+export { apiRequest, API_BASE_URL };
