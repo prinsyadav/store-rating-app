@@ -1,4 +1,10 @@
-const API_BASE_URL = "http://localhost:3000/api";
+// const API_BASE_URL = "http://localhost:3000/api";
+const API_BASE_URL =
+  import.meta.env.MODE === "production" ||
+  import.meta.env.VITE_USE_PRODUCTION_API === "true"
+    ? "https://store-rating-app-l4aq.onrender.com"
+    : "http://localhost:3000/api";
+
 import axios from "axios";
 
 // Helper function to get the JWT token from localStorage

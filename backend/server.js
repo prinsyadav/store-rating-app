@@ -12,8 +12,33 @@ const adminRoutes = require("./routes/admin.routes");
 const userRoutes = require("./routes/user.routes");
 const storeOwnerRoutes = require("./routes/storeOwner.routes");
 
+const allowedOrigins = [
+  "http://localhost:3000", // Local frontend dev server
+  "http://localhost:5173", // Vite's default port
+  "https://store-rating-app-sigma.vercel.app", // Vercel production URL
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+// Apply CORS with the configuration
+app.use(cors(corsOptions));
+
 // Middleware
-app.use(cors());
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -70,23 +95,23 @@ const seedAdmin = async () => {
   }
 };
 
-// 404 middleware - This needs to be a function, not an object
-app.use((req, res, next) => {
-  res.status(404).json({
-    success: false,
-    message: "Route not found",
-  });
-});
+// // 404 middleware - This needs to be a function, not an object
+// app.use((req, res, next) => {
+//   res.status(404).json({
+//     success: false,
+//     message: "Route not found",
+//   });
+// });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error("Error:", err);
-  res.status(500).json({
-    success: false,
-    message: "Internal Server Error",
-    error: process.env.NODE_ENV === "development" ? err.message : undefined,
-  });
-});
+// // Error handling middleware
+// app.use((err, req, res, next) => {
+//   console.error("Error:", err);
+//   res.status(500).json({
+//     success: false,
+//     message: "Internal Server Error",
+//     error: process.env.NODE_ENV === "development" ? err.message : undefined,
+//   });
+// });
 
 // Sync database and start server
 sequelize
