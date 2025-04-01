@@ -1,31 +1,14 @@
-import { useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
-  const [user, setUser] = useState(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
-
-    if (token && userData) {
-      try {
-        setUser(JSON.parse(userData));
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-      }
-    }
-  }, []);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
+    logout();
     navigate("/login");
   };
 
@@ -34,10 +17,10 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-600 text-white p-4">
+    <nav className="bg-blue-600 text-white p-4 fixed w-full z-10">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-xl font-bold">
-          Store Rating App
+          Store Ratings
         </Link>
 
         {/* Mobile menu button */}
@@ -62,7 +45,7 @@ const Navbar = () => {
         <div className="hidden md:flex space-x-4 items-center">
           {user ? (
             <>
-              {/* Admin links */}
+              {/* Admin Navigation Links */}
               {user.role === "admin" && (
                 <>
                   <Link to="/admin/dashboard" className="hover:text-blue-200">
@@ -74,10 +57,13 @@ const Navbar = () => {
                   <Link to="/admin/stores" className="hover:text-blue-200">
                     Stores
                   </Link>
+                  <Link to="/admin/profile" className="hover:text-blue-200">
+                    Profile
+                  </Link>
                 </>
               )}
 
-              {/* Store Owner links */}
+              {/* Store Owner Navigation Links */}
               {user.role === "storeOwner" && (
                 <>
                   <Link
@@ -86,23 +72,28 @@ const Navbar = () => {
                   >
                     Dashboard
                   </Link>
-                  <Link to="/store-owner/store" className="hover:text-blue-200">
-                    My Store
+                  <Link
+                    to="/store-owner/profile"
+                    className="hover:text-blue-200"
+                  >
+                    Profile
                   </Link>
                 </>
               )}
 
-              {/* Regular User links */}
+              {/* Regular User Navigation Links */}
               {user.role === "user" && (
-                <Link to="/user/stores" className="hover:text-blue-200">
-                  Stores
-                </Link>
+                <>
+                  <Link to="/user/stores" className="hover:text-blue-200">
+                    Stores
+                  </Link>
+                  <Link to="/user/profile" className="hover:text-blue-200">
+                    Profile
+                  </Link>
+                </>
               )}
 
-              {/* Common links for logged in users */}
-              <Link to="/auth/profile" className="hover:text-blue-200">
-                Profile
-              </Link>
+              {/* User info and logout */}
               <span className="px-2">|</span>
               <span className="font-medium">{user.name.split(" ")[0]}</span>
               <button
@@ -115,13 +106,13 @@ const Navbar = () => {
           ) : (
             <>
               <Link to="/login" className="hover:text-blue-200">
-                Login
+                Sign in
               </Link>
               <Link
                 to="/signup"
                 className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-blue-100"
               >
-                Sign Up
+                Sign up
               </Link>
             </>
           )}
@@ -144,6 +135,9 @@ const Navbar = () => {
                     <Link to="/admin/stores" className="hover:text-blue-200">
                       Stores
                     </Link>
+                    <Link to="/admin/profile" className="hover:text-blue-200">
+                      Profile
+                    </Link>
                   </>
                 )}
 
@@ -157,25 +151,27 @@ const Navbar = () => {
                       Dashboard
                     </Link>
                     <Link
-                      to="/store-owner/store"
+                      to="/store-owner/profile"
                       className="hover:text-blue-200"
                     >
-                      My Store
+                      Profile
                     </Link>
                   </>
                 )}
 
                 {/* Regular User links */}
                 {user.role === "user" && (
-                  <Link to="/user/stores" className="hover:text-blue-200">
-                    Stores
-                  </Link>
+                  <>
+                    <Link to="/user/stores" className="hover:text-blue-200">
+                      Stores
+                    </Link>
+                    <Link to="/user/profile" className="hover:text-blue-200">
+                      Profile
+                    </Link>
+                  </>
                 )}
 
-                {/* Common links for logged in users */}
-                <Link to="/auth/profile" className="hover:text-blue-200">
-                  Profile
-                </Link>
+                {/* User info and logout */}
                 <div className="pt-2 border-t border-blue-500">
                   <span className="font-medium">{user.name.split(" ")[0]}</span>
                 </div>
@@ -189,13 +185,13 @@ const Navbar = () => {
             ) : (
               <div className="flex flex-col space-y-3">
                 <Link to="/login" className="hover:text-blue-200">
-                  Login
+                  Sign in
                 </Link>
                 <Link
                   to="/signup"
                   className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-blue-100 text-center"
                 >
-                  Sign Up
+                  Sign up
                 </Link>
               </div>
             )}

@@ -17,20 +17,38 @@ const AddStore = () => {
   const [submitError, setSubmitError] = useState("");
 
   // Fetch users (potential store owners)
+  // Update the fetchUsers function in useEffect
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        setUsersLoading(true);
         const response = await adminApi.getUsers();
-        if (response.success) {
-          // Filter out users who already are store owners
-          const eligibleUsers = response.data.filter(
+
+        // First, check if we got a successful response with data
+        if (response && response.success) {
+          console.log("All users fetched:", response.data); // Debug logging
+
+          // Make sure we're using the correct property to get users array
+          const usersArray = Array.isArray(response.data) ? response.data : [];
+
+          // Filter users who aren't already store owners
+          const eligibleUsers = usersArray.filter(
             (user) => user.role !== "storeOwner"
           );
+
+          console.log("Eligible users:", eligibleUsers); // Debug logging
           setUsers(eligibleUsers);
+        } else {
+          console.error("Invalid response from getUsers API:", response);
+          setSubmitError(
+            "Failed to load available users: Invalid response format"
+          );
         }
       } catch (err) {
         console.error("Error fetching users:", err);
-        setSubmitError("Failed to load available users");
+        setSubmitError(
+          "Failed to load available users: " + (err.message || "Unknown error")
+        );
       } finally {
         setUsersLoading(false);
       }

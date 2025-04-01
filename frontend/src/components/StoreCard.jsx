@@ -2,7 +2,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import RatingForm from "./RatingForm";
 
-const StoreCard = ({ store, userRole, onRateStore, isDetailView = false }) => {
+const StoreCard = ({
+  store,
+  userRole,
+  onRatingSubmit,
+  isDetailView = false,
+}) => {
   const [showRatingForm, setShowRatingForm] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -13,7 +18,7 @@ const StoreCard = ({ store, userRole, onRateStore, isDetailView = false }) => {
 
   const handleRatingSubmit = async (ratingData) => {
     try {
-      await onRateStore(store.id, ratingData);
+      await onRatingSubmit(store.id, ratingData);
       setShowRatingForm(false);
       setSuccessMessage("Rating submitted successfully!");
 

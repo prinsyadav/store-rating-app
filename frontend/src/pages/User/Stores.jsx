@@ -18,7 +18,7 @@ const Stores = () => {
     try {
       const response = await userApi.getStores(filterParams);
       if (response.success) {
-        setStores(response.data.stores || []);
+        setStores(response.data || []);
       } else {
         setError(response.message || "Failed to load stores");
       }
@@ -47,18 +47,32 @@ const Stores = () => {
   };
 
   const handleRatingSubmit = async (storeId, ratingData) => {
+    setError("");
     try {
-      await userApi.submitRating({
+      console.log("Submitting rating:", { storeId, ...ratingData });
+      const response = await userApi.submitRating({
         storeId,
         score: ratingData.score,
         comment: ratingData.comment,
       });
 
+      console.log("Rating submission response:", response);
+
+      if (!response || !response.success) {
+        throw new Error(response?.message || "Failed to submit rating");
+      }
+
+      // Show success message
+      setError("");
+      alert("Rating submitted successfully!");
+
       // Refresh store list to show updated ratings
       fetchStores(filters);
     } catch (err) {
       console.error("Error submitting rating:", err);
-      setError("Failed to submit rating. Please try again.");
+      setError(
+        "Failed to submit rating: " + (err.message || "Please try again.")
+      );
     }
   };
 

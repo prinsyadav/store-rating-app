@@ -1,4 +1,5 @@
 const API_BASE_URL = "http://localhost:3000/api";
+import axios from "axios";
 
 // Helper function to get the JWT token from localStorage
 const getToken = () => localStorage.getItem("token");
@@ -94,7 +95,25 @@ export const adminApi = {
     return apiRequest(`/admin/users${queryString ? `?${queryString}` : ""}`);
   },
 
-  getUserById: (id) => apiRequest(`/admin/users/${id}`),
+  getUserById: async (userId) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/admin/users/${userId}`, // Remove the duplicate /api
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("API error in getUserById:", error);
+      return {
+        success: false,
+        message: error.response?.data?.message || "Error fetching user details",
+      };
+    }
+  },
 
   createUser: (userData) =>
     apiRequest("/admin/users", {
@@ -102,11 +121,26 @@ export const adminApi = {
       body: userData,
     }),
 
-  updateUser: (id, userData) =>
-    apiRequest(`/admin/users/${id}`, {
-      method: "PUT",
-      body: userData,
-    }),
+  updateUser: async (userId, userData) => {
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/admin/users/${userId}`, // Remove the duplicate /api
+        userData,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("API error in updateUser:", error);
+      return {
+        success: false,
+        message: error.response?.data?.message || "Error updating user",
+      };
+    }
+  },
 
   deleteUser: (id) =>
     apiRequest(`/admin/users/${id}`, {
@@ -123,7 +157,26 @@ export const adminApi = {
     return apiRequest(`/admin/stores${queryString ? `?${queryString}` : ""}`);
   },
 
-  getStoreById: (id) => apiRequest(`/admin/stores/${id}`),
+  getStoreById: async (storeId) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/admin/stores/${storeId}`, // Remove the duplicate /api
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("API error in getStoreById:", error);
+      return {
+        success: false,
+        message:
+          error.response?.data?.message || "Error fetching store details",
+      };
+    }
+  },
 
   createStore: (storeData) =>
     apiRequest("/admin/stores", {
@@ -131,11 +184,26 @@ export const adminApi = {
       body: storeData,
     }),
 
-  updateStore: (id, storeData) =>
-    apiRequest(`/admin/stores/${id}`, {
-      method: "PUT",
-      body: storeData,
-    }),
+  updateStore: async (storeId, storeData) => {
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/admin/stores/${storeId}`, // Remove the duplicate /api
+        storeData,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("API error in updateStore:", error);
+      return {
+        success: false,
+        message: error.response?.data?.message || "Error updating store",
+      };
+    }
+  },
 
   deleteStore: (id) =>
     apiRequest(`/admin/stores/${id}`, {
@@ -146,10 +214,9 @@ export const adminApi = {
 // Store Owner API
 export const storeApi = {
   getDashboard: () => apiRequest("/store-owner/dashboard"),
-
   getStoreDetails: () => apiRequest("/store-owner/store"),
-
   getStoreRatings: () => apiRequest("/store-owner/ratings"),
 };
 
-export default apiRequest;
+// Export the apiRequest for use in other files if needed
+export { apiRequest };

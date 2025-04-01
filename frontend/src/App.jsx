@@ -13,6 +13,10 @@ import Home from "./pages/Home";
 import AdminDashboard from "./pages/Admin/Dashboard";
 import AddUser from "./pages/Admin/AddUser";
 import AddStore from "./pages/Admin/AddStore";
+import UsersList from "./pages/Admin/UsersList"; // Add this import
+import StoresList from "./pages/Admin/StoresList"; // Add this import
+import EditUser from "./pages/Admin/EditUser";
+import EditStore from "./pages/Admin/EditStore";
 
 // Store Owner pages
 import StoreOwnerDashboard from "./pages/StoreOwner/Dashboard";
@@ -38,8 +42,6 @@ function App() {
     <>
       <Navbar />
       <main className="pt-16">
-        {" "}
-        {/* Add padding to accommodate fixed navbar */}
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<Home />} />
@@ -51,6 +53,11 @@ function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/users/add" element={<AddUser />} />
             <Route path="/admin/stores/add" element={<AddStore />} />
+            <Route path="/admin/users" element={<UsersList />} />
+            <Route path="/admin/stores" element={<StoresList />} />
+            <Route path="/admin/profile" element={<UserProfile />} />
+            <Route path="/admin/users/:id/edit" element={<EditUser />} />
+            <Route path="/admin/stores/edit/:id" element={<EditStore />} />
           </Route>
 
           {/* Store Owner routes */}
