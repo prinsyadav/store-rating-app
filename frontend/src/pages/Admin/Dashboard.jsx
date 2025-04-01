@@ -132,7 +132,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        {/* <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4">System Status</h2>
           <div className="flex flex-col space-y-4">
             <div className="flex justify-between items-center p-3 bg-green-50 rounded-md border border-green-100">
@@ -149,7 +149,7 @@ const Dashboard = () => {
               </span>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

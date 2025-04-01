@@ -10,6 +10,10 @@ const StoresList = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState(location.state?.message || "");
 
+  // Add sorting state variables
+  const [sortField, setSortField] = useState("name");
+  const [sortDirection, setSortDirection] = useState("asc");
+
   useEffect(() => {
     const fetchStores = async () => {
       try {
@@ -34,6 +38,42 @@ const StoresList = () => {
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
+
+  // Add sort function
+  const handleSort = (field) => {
+    // If clicking the same field, toggle direction
+    if (field === sortField) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      // If clicking a new field, set it with ascending direction
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
+  // Sort the stores array based on current sort field and direction
+  const sortedStores = [...stores].sort((a, b) => {
+    // Determine the values to compare based on the field
+    let aValue, bValue;
+
+    if (sortField === "rating") {
+      aValue = a.averageRating || 0;
+      bValue = b.averageRating || 0;
+    } else if (sortField === "owner") {
+      aValue = (a.User ? a.User.name : "").toLowerCase();
+      bValue = (b.User ? b.User.name : "").toLowerCase();
+    } else {
+      aValue = (a[sortField] || "").toLowerCase();
+      bValue = (b[sortField] || "").toLowerCase();
+    }
+
+    // Compare based on direction
+    if (sortDirection === "asc") {
+      return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+    } else {
+      return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
+    }
+  });
 
   const handleDeleteStore = async (storeId, storeName) => {
     if (
@@ -61,6 +101,14 @@ const StoresList = () => {
       </div>
     );
   }
+
+  // Helper function to render sort indicators
+  const renderSortIndicator = (field) => {
+    if (sortField === field) {
+      return sortDirection === "asc" ? " ↑" : " ↓";
+    }
+    return "";
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -96,17 +144,29 @@ const StoresList = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Name
+              <th
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort("name")}
+              >
+                Name {renderSortIndicator("name")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Email
+              <th
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort("email")}
+              >
+                Email {renderSortIndicator("email")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Rating
+              <th
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort("rating")}
+              >
+                Rating {renderSortIndicator("rating")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Owner
+              <th
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort("owner")}
+              >
+                Owner {renderSortIndicator("owner")}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
@@ -114,8 +174,8 @@ const StoresList = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {stores.length > 0 ? (
-              stores.map((store) => (
+            {sortedStores.length > 0 ? (
+              sortedStores.map((store) => (
                 <tr key={store.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">
