@@ -13,14 +13,14 @@ const userRoutes = require("./routes/user.routes");
 const storeOwnerRoutes = require("./routes/storeOwner.routes");
 
 const allowedOrigins = [
-  "http://localhost:3000", // Local frontend dev server
-  "http://localhost:5173", // Vite's default port
-  "https://store-rating-app-sigma.vercel.app", // Vercel production URL
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://store-rating-app-sigma.vercel.app",
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, Postman)
+    // Allow requests with no origin (Postman)
     if (!origin) return callback(null, true);
 
     if (allowedOrigins.indexOf(origin) !== -1) {
@@ -65,67 +65,48 @@ const seedAdmin = async () => {
     });
 
     if (!adminExists) {
-      // Make sure password meets the requirements before hashing
-      const adminPassword = "Admin@123456"; // Has uppercase and special char
+      const adminPassword = "Admin@123456";
 
       // Verify password format before hashing
       const passwordRegex =
         /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>\/?]).{8,16}$/;
       if (!passwordRegex.test(adminPassword)) {
-        console.error("❌ Admin password doesn't meet requirements");
+        console.error("Admin password doesn't meet requirements");
         return;
       }
 
       const hashedPassword = await hashPassword(adminPassword);
 
       await User.create({
-        name: "System Administrator User Account", // Min 20 chars as per validation
+        name: "System Administrator User Account",
         email: "admin@example.com",
         password: hashedPassword,
         address: "Admin Office, Headquarters, Floor 20",
         role: "admin",
       });
 
-      console.log("✅ Admin user created successfully");
+      console.log("Admin user created successfully");
     } else {
-      console.log("ℹ️ Admin user already exists");
+      console.log("Admin user already exists");
     }
   } catch (error) {
-    console.error("❌ Error seeding admin user:", error);
+    console.error("Error seeding admin user:", error);
   }
 };
-
-// // 404 middleware - This needs to be a function, not an object
-// app.use((req, res, next) => {
-//   res.status(404).json({
-//     success: false,
-//     message: "Route not found",
-//   });
-// });
-
-// // Error handling middleware
-// app.use((err, req, res, next) => {
-//   console.error("Error:", err);
-//   res.status(500).json({
-//     success: false,
-//     message: "Internal Server Error",
-//     error: process.env.NODE_ENV === "development" ? err.message : undefined,
-//   });
-// });
 
 // Sync database and start server
 sequelize
   .sync()
   .then(async () => {
-    console.log("📚 Database synced successfully");
+    console.log("Database synced successfully");
 
     // Seed admin user
     await seedAdmin();
 
     app.listen(port, () => {
-      console.log(`🚀 Server is running at http://localhost:${port}`);
+      console.log(`Server is running at http://localhost:${port}`);
     });
   })
   .catch((err) => {
-    console.error("❌ Unable to sync database:", err);
+    console.error("Unable to sync database:", err);
   });

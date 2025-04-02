@@ -31,8 +31,6 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING,
         allowNull: false,
-        // Remove the regex validation for password since we validate on input
-        // but the hashed password won't match the pattern
       },
       address: {
         type: DataTypes.TEXT,

@@ -62,7 +62,7 @@ const Login = () => {
         )}
 
         <form className="mt-8 space-y-6 " onSubmit={handleSubmit}>
-          <div className="-space-y-px rounded-md shadow-sm pb-3">
+          <div className="-space-y-px rounded-md shadow-sm">
             <div className="mb-3">
               <label htmlFor="email-address" className="sr-only">
                 Email address
