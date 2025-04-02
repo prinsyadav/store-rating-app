@@ -160,7 +160,7 @@ A comprehensive web application that allows users to submit ratings for stores. 
 
 The application uses the following main entities:
 
-- Users (Admin, Normal, Store Owner)
+- Users (Admin, User, Store Owner)
 - Stores
 - Ratings
 
