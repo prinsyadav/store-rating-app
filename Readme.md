@@ -114,7 +114,7 @@ A comprehensive web application that allows users to submit ratings for stores. 
 ### Default Admin Account
 
 - Email: admin@example.com
-- Password: Admin@123456
+- Password: Admin@12345
 
 ### System Administrator
 
